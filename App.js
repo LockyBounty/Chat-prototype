@@ -1,43 +1,34 @@
-import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
 
-import DisplayContainer from './components/DisplayContainer';
-import Navbar from './components/Navbar';
+import React, { Component } from 'react'
+import { Text, View } from 'react-native'
+import Pusher from 'pusher-js/react-native';
 
-export default class App extends React.Component {
-  state = {
-    currentPage: 'home'
-  }
-  setPage = (page) => {
-    this.setState({
-      currentPage: page
-    })
-  }
+let p1 = "73c4e59563"
+let p2 = "70c5c31b20"
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+var pusher = new Pusher(p1+p2, {
+  cluster: 'eu',
+  forceTLS: true
+});
+
+var channel = pusher.subscribe('my-channel');
+channel.bind('my-event', function(data) {
+  alert(JSON.stringify(data));
+});
+
+
+
+
+
+export default class App extends Component {
   render() {
     return (
-     
-        <View style={styles.container}>
-          
-          <DisplayContainer
-          display={this.state.currentPage}/>
-          
-          <Navbar
-          changePage = {this.setPage}
-          currentPage= {this.state.currentPage}
-          />
-        </View>
-      
-    );
+      <View>
+        <Text> keketteInComponent </Text>
+      </View>
+    )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
- 
-});

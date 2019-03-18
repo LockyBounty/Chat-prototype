@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>Chatkit demo</title>
+  </head>
+  <body>
+    <ul id="message-list"></ul>
+    <form id="message-form">
+      <input type='text' id='message-text'>
+      <input type="button" value='Submit'>
+    </form>
+
+    <script src="https://unpkg.com/@pusher/chatkit-client@1/dist/web/chatkit.js"></script>
+    <script>
+    const tokenProvider = new Chatkit.TokenProvider({
+    url: "https://us1.pusherplatform.io/services/chatkit_token_provider/v1/fd807ac2-34b0-474a-a170-66a7acaadd52/token"
+    });
+
+    const chatManager = new Chatkit.ChatManager({
+    instanceLocator: "v1:us1:fd807ac2-34b0-474a-a170-66a7acaadd52",
+    userId: "tester2",
+    tokenProvider: tokenProvider
+    });
+
+    let msg1 = "123"
+    
+    
+    
+    
+
+    chatManager
+    .connect()
+    .then(currentUser => {
+
+        currentUser.subscribeToRoomMultipart({
+            roomId: currentUser.rooms[0].id,
+            hooks: {
+            onMessage: message => {
+                console.log("Received message:", message)
+            }
+            },
+        
+            messageLimit: 0
+        })
+        currentUser.sendSimpleMessage({
+            text: msg1,
+            roomId: currentUser.rooms[0].id
+            });
+        
+
+        
+        currentUser.fetchMultipartMessages({
+        roomId: currentUser.rooms[0].id,
+        initialId: 42,
+        direction: 'older',
+        limit: 10,
+        })
+        .then(messages => {
+            const oldestMessageIdReceived = Math.min(...roomMessages.map(m => m.id));
+            console.log(messages);
+        })
+        .catch(err => {
+            console.log(`Error fetching messages: ${err}`)
+        })
+        
+    })
+    </script>
+  </body>
+</html>
